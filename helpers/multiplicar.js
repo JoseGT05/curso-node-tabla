@@ -1,47 +1,51 @@
-
-
-
-const fs = require( 'fs' );
+// requireds
+const fs = require('fs');
 const colors = require('colors');
 
-const crearArchivo = async( base = 5, listar = false, hasta = 10 ) => {
+let listarTabla = (base, limite = 10) => {
 
-    try {
+    console.log('=================='.green);
+    console.log(`tabla de ${ base }`.green);
+    console.log('=================='.green);
 
-        let salida  = '';
-        let consola = '';
-        
-        for( let i = 1; i <= hasta; i++ ) {
-            salida  += `${ base } x ${ i } = ${ base * i }\n`;
-            consola += `${ base } ${ 'x'.cyan } ${ i } ${ '='.cyan } ${ base * i }\n`;
-        }
-
-        if ( listar ) {
-            console.log( '==============='.green );
-            console.log( 'Tabla del:', colors.blue( base ) );
-            console.log( '==============='.green );
-            
-            console.log( consola );
-        
-        }
-
-    
-    
-    
-        fs.writeFileSync( `./salida/tabla-${ base }.txt`, salida );
-        
-    
-        return `tabla-${ base }.txt`;
-    
-
-    
-    } catch(err) {
-        throw err;
-    }    
-
+    for (let i = 1; i <= limite; i++) {
+        console.log(`${ base } * ${ i } = ${ base * i }`)
     }
 
 
+}
+
+
+let crearArchivo = (base, limite = 10) => {
+
+    return new Promise((resolve, reject) => {
+
+        if (!Number(base)) {
+            reject(`El valor introducido ${ base } no es un número`);
+            return;
+        }
+
+        let data = '';
+
+        for (let i = 1; i <= limite; i++) {
+            data += `${ base } * ${ i } = ${ base * i }\n`;
+        }
+
+
+        fs.writeFile(`tablas/tabla-${ base }-al-${ limite }.txt`, data, (err) => {
+
+            if (err)
+                reject(err)
+            else
+                resolve(`tabla-${ base }-al-${ limite }.txt`);
+
+        });
+
+    });
+
+}
+
 module.exports = {
-    crearArchivo
+    crearArchivo,
+    listarTabla
 }
